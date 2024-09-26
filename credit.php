@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>PayGlitz - Customer</title>
+  <title>PayGlitz - Credit</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -27,8 +27,8 @@
         <nav id="navmenu" class="navmenu">
             <ul>
             <li><a href="dashboard.php">Dashboard</a></li>
-            <li><a href="customer.php" class="active">Customer</a></li>
-            <li><a href="credit.php">Credit</a></li>
+            <li><a href="customer.php">Customer</a></li>
+            <li><a href="credit.php" class="active">Credit</a></li>
             <li><a href="collection.php">Collection</a></li>
             <li><a href="report.php">Report</a></li>
             </ul>
@@ -47,17 +47,18 @@
       </div>
       <div class="container text-center">
         <div class="d-flex flex-column justify-content-center align-items-center">
-          <h1 data-aos="fade-up"><span>Customer</span></h1>
+          <h1 data-aos="fade-up"><span>Credit</span></h1>
           <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
             <center>
               <div class="p-5">
                 <div class="col-lg-10">
                   <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
-                    <div class="row gy-4 col-lg-8">
+                    <div class="row gy-4 col-lg-6">
 
-                        <input type="text" name="uname" id="uname" class="form-control w-100" placeholder="Name" required="">
-                        <input type="text" class="form-control w-100" name="upword" id="upword" placeholder="Address" required="">
-                        <input type="text" name="uname" id="uname" class="form-control w-100" placeholder="Tel. No" required="">
+                        <input type="text" name="crdate" id="crdate" class="form-control w-100" placeholder="Date" required="">
+                        <input type="text" name="cname" id="cname" class="form-control w-100" placeholder="Customer name (select)" required="">
+                        <input type="text" name="cramount" id="cramount" class="form-control w-100" placeholder="Amount" required="">
+                        <input type="text" name="acctype" id="acctype" class="form-control w-100" value="Account type - Credit" disabled required="">
 
                       <div></div>
                     </div>

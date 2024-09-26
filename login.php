@@ -46,14 +46,11 @@
               <div class="p-5">
                 <div class="col-lg-10">
                   <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
-                    <div class="row gy-4">
-                      <div class="col-md-12">
-                        <input type="text" name="uname" id="uname" class="form-control w-100" placeholder="Username" required="">
-                      </div>
+                    <div class="row gy-4 col-lg-12">
 
-                      <div class="col-md-12">
+                        <input type="text" name="uname" id="uname" class="form-control w-100" placeholder="Username" required="">
                         <input type="text" class="form-control" name="upword" id="upword" placeholder="Password" required="">
-                      </div>
+
                       <div></div>
                     </div>
                     <a href="#" class="btn-get-started">Log in</a>
