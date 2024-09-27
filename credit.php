@@ -10,6 +10,8 @@
 
   <?php
   include "head.php";
+  include "db.php";
+  include "dbase.php";
   ?>
   
 </head>
@@ -52,17 +54,32 @@
             <center>
               <div class="p-5">
                 <div class="col-lg-10">
-                  <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
+                  <form action="savecredit.php" id="creditform" method="post" class="php-email-form" style="background-color: lightgreen;" data-aos="fade-up" data-aos-delay="400">
+                    <?php
+                    $sql = "SELECT cno, cname, ano FROM customer";
+                    $result = $conn->query($sql);
+                    ?>
                     <div class="row gy-4 col-lg-6">
 
-                        <input type="text" name="crdate" id="crdate" class="form-control w-100" placeholder="Date" required="">
-                        <input type="text" name="cname" id="cname" class="form-control w-100" placeholder="Customer name (select)" required="">
-                        <input type="text" name="cramount" id="cramount" class="form-control w-100" placeholder="Amount" required="">
-                        <input type="text" name="acctype" id="acctype" class="form-control w-100" value="Account type - Credit" disabled required="">
+                        <input type="date" name="date" id="date" class="form-control w-100" placeholder="Date" required="">
+                        <select name="customer" class="form-control w-100" required>
+                            <option value="">Select a customer</option>
+                            <?php
+                            if ($result->num_rows > 0) {
+                                while($row = $result->fetch_assoc()) {
+                                    echo "<option value='{$row['cno']}-{$row['ano']}'>{$row['cname']}</option>";
+                                }
+                            } else {
+                                echo "<option value=''>No customers available</option>";
+                            }
+                            ?>
+                        </select>
+                        <input type="text" name="amount" id="amount" class="form-control w-100" placeholder="Amount" required="">
+                        <input type="text" name="account_type" id="account_type" class="form-control w-100" value="Credit" disabled required="">
 
                       <div></div>
                     </div>
-                    <a href="#" class="btn-get-started">Save</a>
+                    <button class="btn btn-get-started" type="submit">Submit</button>
                   </form>
                 </div>
               </div>
@@ -71,6 +88,57 @@
         </div>
       </div>
     </section><!-- Hero Section -->
+
+    <div class="container-fluid contact py-0">
+                <div class="container py-0">
+                    <div class="container p-5 bg-light rounded">
+                        <div class="container py-5 row g-4 justify-content-center">
+                            <?php
+                                $str1 = "SELECT * FROM account WHERE amount >= 0";
+                                $rs1 = $bdd -> query ($str1) or die ("error on $str1");
+                            ?>
+                            <table class="table table-striped table-bordered" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>Customer No.</th>
+                                        <th>Account No.</th>
+                                        <th>Date</th>
+                                        <th>Account type</th>
+                                        <th>Amount</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row1=$rs1 -> fetch()){ ?>
+                                    <tr>
+                                        <td> <?php echo $row1[0] ?> </td>
+                                        <td> <?php echo $row1[1] ?> </td>
+                                        <td> <?php echo $row1[2] ?> </td>
+                                        <td> <?php echo $row1[3] ?> </td>
+                                        <td> <?php echo $row1[4] ?> </td>
+                                        <td> <input
+                                                type="button"
+                                                value="Edit"
+                                                class="form-control text-white bg-success"
+                                                id=<?php echo $row1[0] ?>
+                                                onclick="editcredit(this.id)">
+                                        </td>
+                                        <td> <input
+                                                type="button"
+                                                value="Del"
+                                                class="form-control text-white bg-danger"
+                                                id=<?php echo $row1[0] ?>
+                                                onclick="deletecredit(this.id)">
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><br>
 
   </main>
 
@@ -134,6 +202,37 @@
   <?php
   include "foot.php";
   ?>
+
+  <script type="text/javascript">
+    // function savecredit(){
+    //     var vals = $("input").map(function(){return $(this).val()}).get()
+    //     alert("Success");
+    //     $.ajax({
+    //         type:'post',
+    //         data:{pvals:vals},
+    //         url:'savecredit.php',
+    //         success:function (json){
+    //             $("#creditdata").html(json);
+    //             // location.reload();
+    //         }
+    //     });
+    // }
+    
+    $(document).ready(function(){
+                $('#table1').DataTable({
+                    dom: 'Bfrtip',
+                    order: [],
+                    pageLength: 10,
+                    buttons: [ 'copy', 'excel', 'pdf','print','colvis'],
+                    responsive: true
+                });
+                $("#creditform").submit(function(e) {
+                    e.preventDefault();
+                    find();
+                });
+            });
+
+    </script>
 
 </body>
 

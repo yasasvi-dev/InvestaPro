@@ -10,6 +10,7 @@
 
   <?php
   include "head.php";
+  include "dbase.php";
   ?>
   
 </head>
@@ -52,16 +53,17 @@
             <center>
               <div class="p-5">
                 <div class="col-lg-10">
-                  <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
+                  <form action="savecustomer.php" id="customerform" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
                     <div class="row gy-4 col-lg-8">
 
-                        <input type="text" name="uname" id="uname" class="form-control w-100" placeholder="Name" required="">
-                        <input type="text" class="form-control w-100" name="upword" id="upword" placeholder="Address" required="">
-                        <input type="text" name="uname" id="uname" class="form-control w-100" placeholder="Tel. No" required="">
+                        <input type="text" name="cname" id="cname" class="form-control w-100" placeholder="Name" required="">
+                        <input type="text" name="cadd" id="cadd" class="form-control w-100" placeholder="Address" required="">
+                        <input type="text" name="ctel" id="ctel" class="form-control w-100" placeholder="Tel. No" required="">
 
                       <div></div>
                     </div>
-                    <a href="#" class="btn-get-started">Save</a>
+                    <button class="btn btn-get-started" type="submit" onclick="savecustomer()">Submit</button>
+                    <div id="customerdata" class="d-none"></div>
                   </form>
                 </div>
               </div>
@@ -70,6 +72,56 @@
         </div>
       </div>
     </section><!-- Hero Section -->
+    <div class="container-fluid contact py-0">
+                <div class="container py-0">
+                    <div class="container p-5 bg-light rounded">
+                        <div class="container py-5 row g-4 justify-content-center">
+                            <?php
+                                $str1 = "SELECT * FROM customer order by cno";
+                                $rs1 = $bdd -> query ($str1) or die ("error on $str1");
+                            ?>
+                            <table class="table table-striped table-bordered" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Name</th>
+                                        <th>Address</th>
+                                        <th>Tel.No</th>
+                                        <th>Account No</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row1=$rs1 -> fetch()){ ?>
+                                    <tr>
+                                        <td> <?php echo $row1[0] ?> </td>
+                                        <td> <?php echo $row1[1] ?> </td>
+                                        <td> <?php echo $row1[2] ?> </td>
+                                        <td> <?php echo $row1[3] ?> </td>
+                                        <td> <?php echo $row1[4] ?> </td>
+                                        <td> <input
+                                                type="button"
+                                                value="Edit"
+                                                class="form-control text-white bg-success"
+                                                id=<?php echo $row1[0] ?>
+                                                onclick="editcustomer(this.id)">
+                                        </td>
+                                        <td> <input
+                                                type="button"
+                                                value="Del"
+                                                class="form-control text-white bg-danger"
+                                                id=<?php echo $row1[0] ?>
+                                                onclick="deletecustomer(this.id)">
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><br>
 
   </main>
 
@@ -133,6 +185,38 @@
   <?php
   include "foot.php";
   ?>
+
+    <script type="text/javascript">
+        function savecustomer(){
+                var vals = $("input").map(function(){return $(this).val()}).get()
+                // alert("Success");
+                $.ajax({
+                    type:'post',
+                    data:{pvals:vals},
+                    url:'savecustomer.php',
+                    success:function (json){
+                        $("#customerdata").html(json);
+                        location.reload();
+                    }
+                });
+        }
+
+        $(document).ready(function(){
+                $('#table1').DataTable({
+                    dom: 'Bfrtip',
+                    order: [],
+                    pageLength: 10,
+                    buttons: [ 'copy', 'excel', 'pdf','print','colvis'],
+                    responsive: true
+                });
+                $("#customerform").submit(function(e) {
+                    e.preventDefault();
+                    find();
+                });
+            });
+
+    </script>
+    
 
 </body>
 

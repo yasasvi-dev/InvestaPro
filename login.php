@@ -45,15 +45,15 @@
             <center>
               <div class="p-5">
                 <div class="col-lg-10">
-                  <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
+                  <form action="logdata.php" method="post" data-aos="fade-up" data-aos-delay="400">
                     <div class="row gy-4 col-lg-12">
 
-                        <input type="text" name="uname" id="uname" class="form-control w-100" placeholder="Username" required="">
-                        <input type="text" class="form-control" name="upword" id="upword" placeholder="Password" required="">
+                        <input type="text" name="username" id="username" class="form-control w-100" placeholder="Username" required>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
 
                       <div></div>
                     </div>
-                    <a href="#" class="btn-get-started">Log in</a>
+                    <button class="btn btn-get-started" type="submit">Login</button>
                   </form>
                 </div>
               </div>
@@ -125,6 +125,7 @@
   <?php
   include "foot.php";
   ?>
+
 
 </body>
 
