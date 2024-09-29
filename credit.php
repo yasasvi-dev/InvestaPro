@@ -54,32 +54,59 @@
             <center>
               <div class="p-5">
                 <div class="col-lg-10">
-                  <form action="savecredit.php" id="creditform" method="post" class="php-email-form" style="background-color: lightgreen;" data-aos="fade-up" data-aos-delay="400">
+                  <form action="" method="post" style="background-color: lightgreen;" data-aos="fade-up" data-aos-delay="400">
                     <?php
                     $sql = "SELECT cno, cname, ano FROM customer";
                     $result = $conn->query($sql);
                     ?>
+                  
                     <div class="row gy-4 col-lg-6">
-
-                        <input type="date" name="date" id="date" class="form-control w-100" placeholder="Date" required="">
-                        <select name="customer" class="form-control w-100" required>
-                            <option value="">Select a customer</option>
-                            <?php
-                            if ($result->num_rows > 0) {
-                                while($row = $result->fetch_assoc()) {
-                                    echo "<option value='{$row['cno']}-{$row['ano']}'>{$row['cname']}</option>";
-                                }
-                            } else {
-                                echo "<option value=''>No customers available</option>";
-                            }
-                            ?>
-                        </select>
-                        <input type="text" name="amount" id="amount" class="form-control w-100" placeholder="Amount" required="">
-                        <input type="text" name="account_type" id="account_type" class="form-control w-100" value="Credit" disabled required="">
-
+                      <input type="date" name="date" id="date" class="form-control w-100" placeholder="Date" required>
+                      <select class="form-control w-100" id="customer" name="customer" required>
+                          <option value="">Select customer</option>
+                          <?php
+                          if ($result->num_rows > 0) {
+                              while($row = $result->fetch_assoc()) {
+                                  echo "<option value='{$row['cno']}-{$row['ano']}'>{$row['cname']}</option>";
+                              }
+                          } else {
+                              echo "<option value=''>No customers available</option>";
+                          }
+                          ?>
+                      </select>
+                      <input type="number" step="0.01" name="amount" id="amount" class="form-control w-100" placeholder="Amount" required>
+                      <input type="text" name="account_type" id="account_type" class="form-control w-100" value="Credit" readonly>
                       <div></div>
                     </div>
                     <button class="btn btn-get-started" type="submit">Submit</button>
+
+                    <?php
+                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                      $date = $_POST['date'];
+                      $customer_data = $_POST['customer'];
+                      $amount = $_POST['amount'];
+                      $account_type = $_POST['account_type'];
+
+                      list($cno, $ano) = explode('-', $customer_data);
+
+                      $amount = floatval($amount);
+
+                      if ($account_type == 'Credit') {
+                        $stmt = $conn->prepare("INSERT INTO account (cno, ano, date, acctype, amount) VALUES (?, ?, ?, ?, ?)");
+                        $stmt->bind_param("iissd", $cno, $ano, $date, $account_type, $amount);
+                      } else {
+                        $amount = -$amount;
+                        $stmt = $conn->prepare("INSERT INTO account (cno, ano, date, acctype, amount) VALUES (?, ?, ?, ?, ?)");
+                        $stmt->bind_param("iissd", $cno, $ano, $date, $account_type, $amount);
+                      }
+                      // $stmt = $conn->prepare("INSERT INTO account (cno, ano, date, acctype, amount) VALUES (?, ?, ?, ?, ?)");
+                      // $stmt->bind_param("iissd", $cno, $ano, $date, $account_type, $amount);
+
+                      $stmt->execute();
+                      $stmt->close();
+                      $conn->close();
+                    }
+                    ?>
                   </form>
                 </div>
               </div>
@@ -139,6 +166,7 @@
                     </div>
                 </div>
             </div><br>
+            <div class="d-none" id="creditdata"></div>
 
   </main>
 
@@ -231,8 +259,16 @@
                     find();
                 });
             });
-
-    </script>
+    
+    function deletecredit(cno) {
+      $.ajax({
+        type:'post',
+        data:{pvals:cno},
+        url:'deletecredit.php',
+        success:function (json) {$("#creditdata").html(json);refreshpage();}
+      });
+    }
+  </script>
 
 </body>
 
