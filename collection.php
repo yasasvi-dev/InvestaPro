@@ -54,7 +54,7 @@
             <center>
               <div class="p-5">
                 <div class="col-lg-10">
-                <form action="" method="post" style="background-color: lightgreen;" data-aos="fade-up" data-aos-delay="400">
+                <form action="" method="post" style="background-color: lightblue;" data-aos="fade-up" data-aos-delay="400">
                     <?php
                     $sql = "SELECT cno, cname, ano FROM customer";
                     $result = $conn->query($sql);
