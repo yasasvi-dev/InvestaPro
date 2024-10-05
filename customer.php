@@ -31,7 +31,7 @@
             <li><a href="customer.php" class="active">Customer</a></li>
             <li><a href="credit.php">Credit</a></li>
             <li><a href="collection.php">Collection</a></li>
-            <li><a href="report.php">Report</a></li>
+            <li><a href="generatebill2.php">Report</a></li>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>

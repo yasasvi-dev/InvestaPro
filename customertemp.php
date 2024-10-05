@@ -4,13 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>PayGlitz - Collection</title>
+  <title>PayGlitz - Customer</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
   <?php
   include "head.php";
-  include "db.php";
   include "dbase.php";
   ?>
   
@@ -29,10 +28,10 @@
         <nav id="navmenu" class="navmenu">
             <ul>
             <li><a href="dashboard.php">Dashboard</a></li>
-            <li><a href="customer.php">Customer</a></li>
+            <li><a href="customer.php" class="active">Customer</a></li>
             <li><a href="credit.php">Credit</a></li>
-            <li><a href="collection.php" class="active">Collection</a></li>
-            <li><a href="generatebill2.php">Report</a></li>
+            <li><a href="collection.php">Collection</a></li>
+            <li><a href="report.php">Report</a></li>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -49,89 +48,81 @@
       </div>
       <div class="container text-center">
         <div class="d-flex flex-column justify-content-center align-items-center">
-          <h1 data-aos="fade-up"><span>Collection</span></h1>
+          <h1 data-aos="fade-up"><span>Customer</span></h1>
           <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
             <center>
               <div class="p-5">
                 <div class="col-lg-10">
-                <form action="" method="post" style="background-color: lightblue;" data-aos="fade-up" data-aos-delay="400">
-                    <?php
-                    $sql = "SELECT cno, cname, ano FROM customer";
-                    $result = $conn->query($sql);
-                    ?>
-                  
-                    <div class="row gy-4 col-lg-6">
-                      <input type="date" name="date" id="date" class="form-control w-100" placeholder="Date" required>
-                      <select class="form-control w-100" id="customer" name="customer" required>
-                          <option value="">Select customer</option>
-                          <?php
-                          if ($result->num_rows > 0) {
-                              while($row = $result->fetch_assoc()) {
-                                  echo "<option value='{$row['cno']}-{$row['ano']}'>{$row['cname']}</option>";
-                              }
-                          } else {
-                              echo "<option value=''>No customers available</option>";
-                          }
-                          ?>
-                      </select>
-                      <input type="number" step="0.01" name="amount" id="amount" class="form-control w-100" placeholder="Amount" required>
-                      <input type="text" name="account_type" id="account_type" class="form-control w-100" value="Collection" readonly>
+                  <form action="savecustomer.php" id="customerform" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
+                    <div class="row gy-4 col-lg-8">
+
+                        <input type="text" name="cname" id="cname" class="form-control w-100" placeholder="Name" required="">
+                        <input type="text" name="cadd" id="cadd" class="form-control w-100" placeholder="Address" required="">
+                        <input type="text" name="ctel" id="ctel" class="form-control w-100" placeholder="Tel. No" required="">
+
                       <div></div>
                     </div>
-                    <button class="btn btn-get-started" type="submit">Submit</button>
-
-                    <?php
-                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                      $date = $_POST['date'];
-                      $customer_data = $_POST['customer'];
-                      $amount = $_POST['amount'];
-                      $account_type = $_POST['account_type'];
-
-                      list($cno, $ano) = explode('-', $customer_data);
-
-                      $amount = floatval($amount);
-
-                      if ($account_type == 'Credit') {
-                        $stmt = $conn->prepare("INSERT INTO account (cno, ano, date, acctype, amount) VALUES (?, ?, ?, ?, ?)");
-                        $stmt->bind_param("iissd", $cno, $ano, $date, $account_type, $amount);
-                      } else {
-                        $amount = -$amount;
-                        $stmt = $conn->prepare("INSERT INTO account (cno, ano, date, acctype, amount) VALUES (?, ?, ?, ?, ?)");
-                        $stmt->bind_param("iissd", $cno, $ano, $date, $account_type, $amount);
-                      }
-                      // $stmt = $conn->prepare("INSERT INTO account (cno, ano, date, acctype, amount) VALUES (?, ?, ?, ?, ?)");
-                      // $stmt->bind_param("iissd", $cno, $ano, $date, $account_type, $amount);
-
-                      $stmt->execute();
-                      $stmt->close();
-                      $conn->close();
-                    }
-                    ?>
+                    <button class="btn btn-get-started" type="submit" onclick="savecustomer()">Submit</button>
+                    <div id="customerdata" class="d-none"></div>
                   </form>
+                  
                 </div>
               </div>
+              <form>
+                          
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="item">Item:</label>
+                                        <select class="form-select" id="itm" name="itm">
+                                        <option value="">Select an item</option>
+                                            <option value="Apple">Apple</option>
+                                            <option value="Banana">Banana</option>
+                                            <option value="Mango">Mango</option>
+                                            <option value="Grapes">Grapes</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="weight">Weight:</label>
+                                        <input type="text" class="form-control" id="wei" name="wei" placeholder="kg">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="price">Price:</label>
+                                        <input type="text" class="form-control" id="pri" name="pri" placeholder="Rs">
+                                    </div>
+                                    <!-- <div class="col-3">
+                                        <br>
+                                        <button type="submit" class="btn btn-primary justify-content">SET</button>
+                                    </div> -->
+                                </div>
+                            </form>
+                            <div class="d-flex justify-content-center">
+                                <button class="w-25 btn form-control border-secondary py-1 px-1 bg-white text-primary" type="button" onclick="add()" id="additm">Add</button>
+                            </div><br>
+                            <!-- <div class="d-flex justify-content-center">
+                                <input type="text" id="itemdata1" class="form-control" value="$sugar:236:5#tea:1250:0.5#">
+                            </div> -->
             </center>
           </div>
         </div>
       </div>
     </section><!-- Hero Section -->
-
+    <div id="collectiondata"></div>
     <div class="container-fluid contact py-0">
                 <div class="container py-0">
                     <div class="container p-5 bg-light rounded">
                         <div class="container py-5 row g-4 justify-content-center">
                             <?php
-                                $str1 = "SELECT * FROM account WHERE amount < 0";
+                                $str1 = "SELECT * FROM customer order by cno";
                                 $rs1 = $bdd -> query ($str1) or die ("error on $str1");
                             ?>
                             <table class="table table-striped table-bordered" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Customer No.</th>
-                                        <th>Account No.</th>
-                                        <th>Date</th>
-                                        <th>Account type</th>
-                                        <th>Amount</th>
+                                        <th>No</th>
+                                        <th>Name</th>
+                                        <th>Address</th>
+                                        <th>Tel.No</th>
+                                        <th>Account No</th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -149,14 +140,14 @@
                                                 value="Edit"
                                                 class="form-control text-white bg-success"
                                                 id=<?php echo $row1[0] ?>
-                                                onclick="editcollection(this.id)">
+                                                onclick="editcustomer(this.id)">
                                         </td>
                                         <td> <input
                                                 type="button"
                                                 value="Del"
                                                 class="form-control text-white bg-danger"
                                                 id=<?php echo $row1[0] ?>
-                                                onclick="deletecollection(this.id)">
+                                                onclick="deletecustomer(this.id)">
                                         </td>
                                     </tr>
                                     <?php } ?>
@@ -230,8 +221,22 @@
   include "foot.php";
   ?>
 
-  <script>
-    $(document).ready(function(){
+    <script type="text/javascript">
+        function savecustomer(){
+                var vals = $("input").map(function(){return $(this).val()}).get()
+                // alert("Success");
+                $.ajax({
+                    type:'post',
+                    data:{pvals:vals},
+                    url:'savecustomer.php',
+                    success:function (json){
+                        $("#customerdata").html(json);
+                        location.reload();
+                    }
+                });
+        }
+
+        $(document).ready(function(){
                 $('#table1').DataTable({
                     dom: 'Bfrtip',
                     order: [],
@@ -239,12 +244,47 @@
                     buttons: [ 'copy', 'excel', 'pdf','print','colvis'],
                     responsive: true
                 });
-                $("#collectionform").submit(function(e) {
+                $("#customerform").submit(function(e) {
                     e.preventDefault();
                     find();
                 });
             });
-            </script>
+            // function add(){
+            //     var vals = $("#itemdata1").val();
+            //     alert(vals)
+            //     $.ajax({
+            //         type:'post',
+            //         data:{pvals:vals},
+            //         url:'additem.php',
+            //         success:function(json){$("#collectiondata").html(json);}
+            //     })
+            // }
+            function add() {
+                // Get the selected item, weight, and price
+                var item = $("#itm").val().trim();
+                var weight = $("#wei").val().trim();
+                var price = $("#pri").val().trim();
+
+                // Check if all fields are filled
+                if (item && weight && price) {
+                    var vals = item + ":" + weight + ":" + price;
+
+                    // Send AJAX request to additem.php
+                    $.ajax({
+                        type: 'post',
+                        data: { pvals: vals },
+                        url: 'additem.php',
+                        success: function (json) {
+                            $("#collectiondata").html(json); // Update the table with the response
+                            $("#item, #weight, #price").val(""); // Clear inputs after adding
+                        }
+                    });
+                } else {
+                    alert("Please fill in all fields.");
+                }
+            }
+    </script>
+    
 
 </body>
 
