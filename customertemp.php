@@ -62,12 +62,13 @@
 
                       <div></div>
                     </div>
-                    <button class="btn btn-get-started" type="submit" onclick="savecustomer()">Submit</button>
+                    <button class="btn btn-get-started" type="submit" >Submit</button>
                     <div id="customerdata" class="d-none"></div>
-                  </form>
                   
+</form>
                 </div>
               </div>
+              
               <form>
                           
                                 <div class="row">
@@ -79,6 +80,7 @@
                                             <option value="Banana">Banana</option>
                                             <option value="Mango">Mango</option>
                                             <option value="Grapes">Grapes</option>
+                                            <option value="Cherry">Cherry</option>
                                         </select>
                                     </div>
                                     <div class="col-4">
@@ -98,9 +100,9 @@
                             <div class="d-flex justify-content-center">
                                 <button class="w-25 btn form-control border-secondary py-1 px-1 bg-white text-primary" type="button" onclick="add()" id="additm">Add</button>
                             </div><br>
-                            <!-- <div class="d-flex justify-content-center">
-                                <input type="text" id="itemdata1" class="form-control" value="$sugar:236:5#tea:1250:0.5#">
-                            </div> -->
+                            <div class="d-flex justify-content-center">
+                                <input type="text" id="itemdata1" class="form-control" value="">
+                            </div>
             </center>
           </div>
         </div>
@@ -237,18 +239,37 @@
         }
 
         $(document).ready(function(){
-                $('#table1').DataTable({
+                $('#table1').DataTable({                 
                     dom: 'Bfrtip',
                     order: [],
                     pageLength: 10,
                     buttons: [ 'copy', 'excel', 'pdf','print','colvis'],
                     responsive: true
                 });
+                /*
                 $("#customerform").submit(function(e) {
                     e.preventDefault();
                     find();
                 });
+                */
+                 $("#customerform").submit(function(e) {
+                  var vals = $(":input").map(function(){return $(this).val();}).get();
+
+                   e.preventDefault();
+                   alert(vals)
+                   
+                   $.ajax({
+                        type:'post',
+                        data:{pvals:vals},
+                        url:'itemsave.php',
+                        success:function (json){
+                          alert(json);
+                            $("#collectiondata").html(json);
+                        }
+                    });
+                });
             });
+                 
             // function add(){
             //     var vals = $("#itemdata1").val();
             //     alert(vals)
@@ -260,23 +281,23 @@
             //     })
             // }
             function add() {
-                // Get the selected item, weight, and price
+                
                 var item = $("#itm").val().trim();
                 var weight = $("#wei").val().trim();
                 var price = $("#pri").val().trim();
 
-                // Check if all fields are filled
+                
                 if (item && weight && price) {
-                    var vals = item + ":" + weight + ":" + price;
-
-                    // Send AJAX request to additem.php
+                    var vals = $("#itemdata1").val() + item + ":" + weight + ":" + price + "#";
+                    $("#itemdata1").val(vals);
+                    
                     $.ajax({
                         type: 'post',
-                        data: { pvals: vals },
+                        data: { pvals: $("#itemdata1").val()},
                         url: 'additem.php',
                         success: function (json) {
-                            $("#collectiondata").html(json); // Update the table with the response
-                            $("#item, #weight, #price").val(""); // Clear inputs after adding
+                            $("#collectiondata").html(json); 
+                            $("#item, #weight, #price").val("");
                         }
                     });
                 } else {
